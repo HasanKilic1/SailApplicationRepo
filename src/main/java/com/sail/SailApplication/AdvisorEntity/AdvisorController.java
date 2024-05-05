@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController()
 public class AdvisorController {
@@ -69,9 +70,19 @@ public class AdvisorController {
     }
 
     //GET ALL REQUESTS OF ADVISOR BY GIVEN ADVISOR ID
-    @GetMapping("advisors/{advisorId}")
-    public List<Request> getRequestsOfAdvisor(@PathVariable Long advisorId) {
-        return advisorService.getAdvisorById(advisorId).getRequests();
+    @GetMapping("/advisors/{advisorId}/requests")
+    public ResponseEntity<?> getRequestsOfAdvisor(@PathVariable Long advisorId) {
+        try {
+            Advisor advisor = advisorService.getAdvisorById(advisorId);
+            List<Request> requests = advisor.getRequests();
+            return ResponseEntity.ok(requests);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Advisor not found with ID: " + advisorId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while retrieving requests for advisor with ID: " + advisorId);
+        }
     }
 
     //ACCEPT THE REQUEST BY GIVEN REQUEST ID

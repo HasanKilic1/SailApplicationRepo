@@ -28,7 +28,7 @@ public class Advisor {
 
 
 
-    @OneToMany(mappedBy = "Advisor")
+    @OneToMany(mappedBy = "advisor")
     private List<Request> requests;
 
     public Advisor() {
