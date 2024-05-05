@@ -1,5 +1,7 @@
 package com.sail.SailApplication.AdvisorEntity;
 
+import com.sail.SailApplication.RequestEntity.Request;
+import com.sail.SailApplication.StudentEntity.Student;
 import com.sail.SailApplication.helpers.EntityUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,22 +19,26 @@ public class AdvisorController {
         this.advisorService = advisorService;
     }
 
+    //SHOW ALL ADVISORS
     @GetMapping("/advisors")
     public List<Advisor> getAllAdvisors(){
         return advisorService.getAllAdvisors();
     }
 
+    //GET ADVISOR BY GIVEN ID
     @GetMapping("/advisors/{advisor-id}")
     public Advisor getAdvisorById(@PathVariable("advisor-id") Long id){
         return advisorService.getAdvisorById(id);
     }
 
+    //ADD NEW ADVISOR TO DATABASE
     @PostMapping("/advisors/post-advisor")
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewAdvisor(@RequestBody Advisor advisor){
         advisorService.addNewAdvisor(advisor);
     }
 
+    //UPDATE THE MAIL OF ADVISOR
     @PutMapping("/put-advisor/update-mail")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<String> updateAdvisorMail(@RequestBody EntityUpdateRequest request) {
@@ -44,8 +50,9 @@ public class AdvisorController {
         else {return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no student that has given id");}
     }
 
+    //DELETE ADVISOR BY GIVEN ID
     @DeleteMapping("/delete-advisor/{advisor-id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("advisor-id") Long id){
+    public ResponseEntity<String> deleteAdvisor(@PathVariable("advisor-id") Long id){
         boolean deleted = advisorService.deleteAdvisorById(id);
         if(deleted)
         {
@@ -55,5 +62,28 @@ public class AdvisorController {
         }
     }
 
+    //GET ALL STUDENTS OF ADVISOR BY GIVEN ADVISOR ID
+    @GetMapping("/advisors/{advisorId}")
+    public List<Student> getStudentsOfAdvisor(@PathVariable Long advisorId) {
+        return advisorService.getAdvisorById(advisorId).getStudents();
+    }
 
+    //GET ALL REQUESTS OF ADVISOR BY GIVEN ADVISOR ID
+    @GetMapping("advisors/{advisorId}")
+    public List<Request> getRequestsOfAdvisor(@PathVariable Long advisorId) {
+        return advisorService.getAdvisorById(advisorId).getRequests();
+    }
+
+    //ACCEPT THE REQUEST BY GIVEN REQUEST ID
+    @PostMapping("/accept-request/{requestId}")
+    public ResponseEntity<String> acceptStudentRequest(@PathVariable Long requestId) {
+        boolean accepted = advisorService.acceptStudentRequest(requestId);
+
+        if (accepted) {
+            return ResponseEntity.ok("Request accepted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to accept request, please try again later");
+        }
+    }
 }

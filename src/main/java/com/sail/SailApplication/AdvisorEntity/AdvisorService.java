@@ -1,5 +1,6 @@
 package com.sail.SailApplication.AdvisorEntity;
 
+import com.sail.SailApplication.RequestEntity.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,11 @@ import java.util.List;
 public class AdvisorService {
 
     private final AdvisorRepository advisorRepository;
+    private final RequestService requestService;
     @Autowired
-    public AdvisorService(AdvisorRepository advisorRepository) {
+    public AdvisorService(AdvisorRepository advisorRepository, RequestService requestService) {
         this.advisorRepository = advisorRepository;
+        this.requestService = requestService;
     }
 
     public Advisor getAdvisorById(Long id){
@@ -52,5 +55,10 @@ public class AdvisorService {
             advisorRepository.deleteById(id);
             return true;
         }
+    }
+
+    public boolean acceptStudentRequest(Long requestId){
+        boolean accepted = requestService.acceptRequest(requestId);
+        return accepted;
     }
 }

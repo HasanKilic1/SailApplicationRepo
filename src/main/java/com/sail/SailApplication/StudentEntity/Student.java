@@ -1,8 +1,9 @@
 package com.sail.SailApplication.StudentEntity;
+import com.sail.SailApplication.AdvisorEntity.Advisor;
 import jakarta.persistence.*;
 
 @Entity
-@Table
+@Table(name = "Books")
 public class Student {
     @Id
     @SequenceGenerator(
@@ -13,11 +14,18 @@ public class Student {
     @GeneratedValue(
             strategy = GenerationType.AUTO,
             generator = "student_sequence")
+
     private Long id;
     private String name;
     private String surname;
     private String email;
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id" , referencedColumnName = "id")
+    private Advisor advisor;
+
+
 
     public Student(){}
     public Student(String name, String surname) {
@@ -70,6 +78,14 @@ public class Student {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Advisor getAdvisor() {
+        return advisor;
+    }
+
+    public void setAdvisor(Advisor advisor) {
+        this.advisor = advisor;
     }
 
     @Override

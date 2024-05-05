@@ -70,4 +70,26 @@ public class StudentController {
         else { return  ResponseEntity.status(HttpStatus.CONFLICT).body("There is no student that has given id");
         }
     }
+
+    @PostMapping("/students/send-request/{studentId}/{advisorId}/{message}")
+    public ResponseEntity<String> sendRequestToAdvisor(@PathVariable("studentId") Long studentId,
+                                                       @PathVariable("advisorId") Long advisorId,
+                                                       @PathVariable("message") String message){
+        try {
+            boolean successfullyCreated = studentService.sendRequestToAdvisor(studentId, advisorId, message);
+            if (successfullyCreated) {
+                return ResponseEntity.ok().body("Request sent successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Failed to send request, please try again later");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Invalid studentId or advisorId provided");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while processing the request");
+        }
+    }
+
 }

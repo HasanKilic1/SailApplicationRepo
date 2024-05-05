@@ -1,18 +1,20 @@
 package com.sail.SailApplication.StudentEntity;
 
+import com.sail.SailApplication.RequestEntity.RequestService;
 import com.sail.SailApplication.StudentRepository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final RequestService requestService;
     @Autowired
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, RequestService requestService) {
         this.studentRepository = studentRepository;
+        this.requestService = requestService;
     }
     public Student getStudentById(Long id){
         return  studentRepository.findStudentById(id);
@@ -47,20 +49,8 @@ public class StudentService {
         }
     }
 
-    // Environment Test
-  /*   private Environment environment;
-    @Autowired
-    public  void setEnvironment(Environment environment){
-        this.environment = environment;
+    public boolean sendRequestToAdvisor(Long studentId , Long advisorId , String message){
+        boolean created = requestService.createRequest(advisorId , studentId , message);
+        return created;
     }
-
-    public String getJavaVersion()
-    {
-        return environment.getProperty("java.version");
-    }
-
-    public String readCustomProperty(){ //for test
-        return  environment.getProperty("sail.custom.property");
-    }
-  */
 }

@@ -1,8 +1,12 @@
 package com.sail.SailApplication.AdvisorEntity;
 
+import com.sail.SailApplication.RequestEntity.Request;
+import com.sail.SailApplication.StudentEntity.Student;
 import jakarta.persistence.*;
+import java.util.List;
+
 @Entity
-@Table
+@Table(name = "Advisors")
 public class Advisor {
     @Id
     @SequenceGenerator(
@@ -18,6 +22,14 @@ public class Advisor {
     private String surname;
     private String email;
     private String password;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "advisor" , cascade = CascadeType.ALL)
+    private List<Student> students;
+
+
+
+    @OneToMany(mappedBy = "Advisor")
+    private List<Request> requests;
 
     public Advisor() {
     }
@@ -67,6 +79,22 @@ public class Advisor {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
     }
 
     @Override
